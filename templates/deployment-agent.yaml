@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "drone.fullname" . }}-agent
+  namespace: {{ template "drone.namespace" . }}
   labels:
     app: {{ template "drone.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -53,17 +54,17 @@ spec:
           containerPort: 3000
           protocol: TCP
         env:
-          - name: DRONE_RPC_SERVER
-            value: http://{{ template "drone.fullname" . }}
+          - name: DRONE_RPC_PROTO
+            value: {{ .Values.server.rpcProtocol . }}
+          - name: DRONE_RPC_HOST
+            value: {{ template "drone.fullname" . }}.{{ template "drone.namespace" . }}:{{ .Values.service.httpPort }
           - name: DRONE_RPC_SECRET
             valueFrom:
               secretKeyRef:
                 name: {{ template "drone.fullname" . }}
                 key: secret
-{{- if .Values.dind.enabled }}
-          - name: DOCKER_HOST
-            value: tcp://localhost:2375
-{{- end }}
+          - name: DRONE_NAMESPACE_DEFAULT
+            value: {{ .Values.kubernetes.namespace . }}
           {{- range $key, $value := .Values.agent.env }}
           - name: {{ $key }}
             value: {{ $value | quote }}
