@@ -77,3 +77,13 @@ pipelines and are instead using the legacy agent method which utilizes
 either docker-in-docker or host mounting in the docker socket. This is
 not recommended due to the additional security concerns.
 {{- end }}
+
+
+DRONE_NAMESPACE_RULES is a map[string]string where as the file is a map[string][]string
+default:
+- octocat/*
+- spaceghost/hello-world
+
+workspace-foo:
+- bar/*
+- baz/qux
