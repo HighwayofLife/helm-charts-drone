@@ -1,4 +1,3 @@
-{{- if not .Values.server.kubernetes.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -122,4 +121,3 @@ spec:
     {{- with .Values.agent.volumes }}
         {{- toYaml . | nindent 6 }}
     {{- end }}
-{{- end -}}

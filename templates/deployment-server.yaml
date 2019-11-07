@@ -53,17 +53,8 @@ spec:
         image: "{{ .Values.images.server.repository }}:{{ .Values.images.server.tag }}"
         imagePullPolicy: {{ .Values.images.server.pullPolicy }}
         env:
-        {{- if .Values.server.kubernetes.enabled }}
-          - name: DRONE_KUBERNETES_ENABLED
-            value: "true"
-          - name: DRONE_KUBERNETES_NAMESPACE
-            value: {{ default (include "drone.namespace" .) .Values.server.kubernetes.namespace }}
-          - name: DRONE_KUBERNETES_SERVICE_ACCOUNT
-            value: {{ template "drone.serviceAccountName" . }}
-        {{- else }}
           - name: DRONE_AGENTS_ENABLED
-            value: "true"
-        {{- end }}
+            value: "false"
           - name: DRONE_GIT_ALWAYS_AUTH
             value: {{ .Values.server.alwaysAuth | quote }}
           - name: DRONE_SERVER_HOST

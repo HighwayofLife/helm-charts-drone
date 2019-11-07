@@ -52,15 +52,3 @@ Create the name of the secret for source control
     {{ printf "%s-%s" (include "drone.fullname" .) "source-control" | trunc 63 -}}
 {{- end -}}
 {{- end -}}
-
-{{/*
-Create the name of the service account to use for kubernetes pipelines
-*/}}
-{{- define "drone.pipelineServiceAccount" -}}
-{{- if .Values.serviceAccount.create -}}
-  {{- $psa := printf "%s-%s" (include "drone.serviceAccountName" .) "pipeline" | trunc 63 -}}
-  {{ default $psa .Values.server.kubernetes.pipelineServiceAccount }}
-{{- else -}}
-  {{ default "default" .Values.server.kubernetes.pipelineServiceAccount }}
-{{- end -}}
-{{- end -}}
