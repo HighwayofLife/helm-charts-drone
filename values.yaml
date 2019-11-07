@@ -207,9 +207,6 @@ server:
 ## Configures drone to use kubernetes to run pipelines using drone-kube-runner agent
 ## Each drone pipeline build will create its own pod to run in
 kubernetes:
-  ## set to true if you want drone to use kubernetes to run pipelines
-  enabled: true
-
   ## Drone kube-runner configuration.
   ## Values in here get injected as environment variables to the kube-runner
   ## Ref: https://kube-runner.docs.drone.io/installation/reference/
@@ -223,10 +220,6 @@ kubernetes:
   ## Specify the namespace to run drone pipelines
   ## Maps to DRONE_NAMESPACE_DEFAULT as the default namespace used by Pipeline runs
   namespace: drone-pipelines
-
-  ## Pipeline Service Account Name
-  # pipelineServiceAccount:
-  pipelineServiceAccount: drone-pipeline-sa
 
   ## The kube-runner UI dashboard
   ## If no username and password are provided, the dashboard is disabled
@@ -399,5 +392,6 @@ serviceAccount:
   name:
 
   ## If any default image pull secrets should be defined within the service account
+  ## These imagePullSecrets are automatically attached to pods in the Service Account namespace
   ## imagePullSecrets:
   ## - dockerconfig
