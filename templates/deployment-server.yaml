@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "drone.fullname" . }}-server
+  namespace: {{ template "drone.namespace" . }}
   labels:
     app: {{ template "drone.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -47,23 +48,13 @@ spec:
       tolerations:
         {{- toYaml . | nindent 6 }}
 {{- end }}
-      serviceAccountName: {{ template "drone.serviceAccountName" . }}
       containers:
       - name: server
         image: "{{ .Values.images.server.repository }}:{{ .Values.images.server.tag }}"
         imagePullPolicy: {{ .Values.images.server.pullPolicy }}
         env:
-        {{- if .Values.server.kubernetes.enabled }}
-          - name: DRONE_KUBERNETES_ENABLED
-            value: "true"
-          - name: DRONE_KUBERNETES_NAMESPACE
-            value: {{ default .Release.Namespace .Values.server.kubernetes.namespace }}
-          - name: DRONE_KUBERNETES_SERVICE_ACCOUNT
-            value: {{ template "drone.pipelineServiceAccount" . }}
-        {{- else }}
           - name: DRONE_AGENTS_ENABLED
-            value: "true"
-        {{- end }}
+            value: "false"
           - name: DRONE_GIT_ALWAYS_AUTH
             value: {{ .Values.server.alwaysAuth | quote }}
           - name: DRONE_SERVER_HOST
@@ -75,7 +66,7 @@ spec:
           - name: DRONE_RPC_PROTO
             value: "{{ .Values.server.rpcProtocol }}"
           - name: DRONE_RPC_HOST
-            value: {{ template "drone.fullname" . }}.{{ .Release.Namespace }}:{{ .Values.service.httpPort }}
+            value: {{ template "drone.fullname" . }}.{{ template "drone.namespace" . }}:{{ .Values.service.httpPort }}
           - name: DRONE_SERVER_PROTO
             value: {{ .Values.server.protocol }}
           {{- if .Values.server.adminUser }}
